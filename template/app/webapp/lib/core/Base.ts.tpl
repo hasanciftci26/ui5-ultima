@@ -12,7 +12,6 @@ export default abstract class Base extends ManagedObject {
     public static readonly metadata: ClassMetadata = {
         abstract: true,
         properties: {
-            controller: { type: "object" },
             oDataModelName: { type: "string" },
             fragmentBasePath: { type: "string" },
             enableBusy: { type: "boolean" }
