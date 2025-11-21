@@ -31,9 +31,11 @@ export default class Generator {
         const source = path.join(__dirname, "..", "..", "template", "app");
 
         consola.start("Generating a free-style SAPUI5 application...");
+
         await this.createRootDirectory(target);
         await this.createFiles(source, target);
         await this.installNpmPackages(target);
+
         consola.success("UI5 Ultima has successfully generated your application!");
     }
 
@@ -98,7 +100,7 @@ export default class Generator {
             this.cancel = true;
 
             if (error instanceof Error && error.name === "ExitPromptError") {
-                consola.info("Generation has been canceled!");
+                consola.info("Generator has been canceled!");
             } else {
                 throw error;
             }
@@ -107,7 +109,7 @@ export default class Generator {
 
     private async getUIModule() {
         return input({
-            message: "Enter UI module name (generator will create a directory with the name you enter):",
+            message: "Enter UI module name (UI5 Ultima will create a directory with the name you enter):",
             required: true,
             validate: (value) => {
                 const regex = /^[a-z](?:[a-z0-9]*(?:-[a-z0-9]+)*)?$/;
@@ -156,7 +158,7 @@ export default class Generator {
         }
 
         return select<string>({
-            message: "Select an SAPUI5 version:",
+            message: "Select SAPUI5 version:",
             choices: versions,
             default: "1.136.11"
         });
@@ -164,21 +166,22 @@ export default class Generator {
 
     private async getTitle() {
         return input({
-            message: "Enter a title for your application:",
+            message: "Enter a title for your SAPUI5 application:",
             required: true
         });
     }
 
     private async getDescription() {
         return input({
-            message: "Enter a description for your application:",
+            message: "Enter a description for your SAPUI5 application:",
             required: true
         });
     }
 
     private async getView() {
         return input({
-            message: "Enter a name for your initial SAPUI5 view:",
+            message: "Enter a name for your initial SAPUI5 view (without .view.xml extension):",
+            required: true,
             validate: (value) => {
                 const regex = /^[A-Z][a-zA-Z]*$/;
 
@@ -241,7 +244,7 @@ export default class Generator {
 
     private async installNpmPackages(target: string): Promise<void> {
         const install = await confirm({
-            message: "Would you like to run npm install command? (default: Y):",
+            message: "Would you like to install npm packages? (default: Y):",
             default: true
         });
 
