@@ -3,6 +3,7 @@
 import { program } from "commander";
 import generate from "./command/generate";
 import addView from "./command/add-view";
+import addFragment from "./command/add-fragment";
 
 program
     .name("ui5-ultima")
@@ -14,6 +15,7 @@ program
 
 program
     .addCommand(generate)
-    .addCommand(addView);
+    .addCommand(addView)
+    .addCommand(addFragment);
 
 program.parse();

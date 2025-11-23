@@ -1,10 +1,47 @@
-import { readFile } from "fs/promises";
+import { access, readFile, writeFile } from "fs/promises";
 import path from "path";
-import { ManifestContent } from "../types/Manifest.types";
+import { ManifestContent, Route, Target, TemplateManifestContent } from "../types/Manifest.types";
 
 export default class Manifest {
-    public getContent() {
-        return this.parse();
+    public async check() {
+        const manifestPath = path.join(process.cwd(), "webapp", "manifest.json");
+        try {
+            await access(manifestPath);
+        } catch (error) {
+            if (this.hasCode(error) && error.code === "ENOENT") {
+                throw new Error(
+                    "The manifest.json file was not found. Run the command in your UI module directory containing the webapp directory. " +
+                    "The manifest.json file must be inside of the webapp directory."
+                );
+            } else {
+                throw error;
+            }
+        }
+    }
+        
+    public addODataModel(rawContent: string, uri: string) {
+        const content = JSON.parse(rawContent) as TemplateManifestContent;
+
+        content["sap.app"].dataSources = {
+            mainService: {
+                uri: uri,
+                type: "OData",
+                settings: {
+                    odataVersion: "2.0"
+                }
+            }
+        };
+
+        content["sap.ui5"].models[""] = {
+            dataSource: "mainService",
+            preload: true,
+            settings: {
+                defaultBindingMode: "TwoWay",
+                defaultCountMode: "Inline"
+            }
+        };
+
+        return JSON.stringify(content, null, 4);
     }
 
     public async getNamespace() {
@@ -22,6 +59,56 @@ export default class Manifest {
 
     public getUI5Path(namespace: string) {
         return namespace.replaceAll(".", "/");
+    }
+
+    public async addRoute(view: string, pattern: string) {
+        const manifestPath = path.join(process.cwd(), "webapp", "manifest.json");
+        const content = await this.parse();
+        const targetName = `Target${view}`;
+        const route: Route = {
+            name: `Route${view}`,
+            pattern: pattern,
+            target: [targetName]
+        };
+        const target: Target = {
+            id: view,
+            name: view,
+            type: "View",
+            viewType: "XML",
+            transition: "slide",
+            clearControlAggregation: false
+        };
+        const targets: Record<string, Target> = { [targetName]: target };
+
+        if (content["sap.ui5"]) {
+            if (content["sap.ui5"].routing) {
+                if (content["sap.ui5"].routing.routes) {
+                    content["sap.ui5"].routing.routes.push(route);
+                } else {
+                    content["sap.ui5"].routing.routes = [route];
+                }
+
+                if (content["sap.ui5"].routing.targets) {
+                    content["sap.ui5"].routing.targets[targetName] = target;
+                } else {
+                    content["sap.ui5"].routing.targets = targets;
+                }
+            } else {
+                content["sap.ui5"].routing = {
+                    routes: [route],
+                    targets: targets
+                };
+            }
+        } else {
+            content["sap.ui5"] = {
+                routing: {
+                    routes: [route],
+                    targets: targets
+                }
+            };
+        }
+
+        await writeFile(manifestPath, JSON.stringify(content, null, 4));
     }
 
     private async parse() {
@@ -44,7 +131,7 @@ export default class Manifest {
         } catch (error) {
             if (this.hasCode(error) && error.code === "ENOENT") {
                 throw new Error(
-                    "The manifest.json file was not found. Run the add-view command in your UI module directory containing the webapp directory. " +
+                    "The manifest.json file was not found. Run the command in your UI module directory containing the webapp directory. " +
                     "The manifest.json file must be inside of the webapp directory."
                 );
             } else {

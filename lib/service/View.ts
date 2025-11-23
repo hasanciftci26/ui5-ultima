@@ -3,7 +3,6 @@ import Manifest from "./Manifest";
 import { input } from "@inquirer/prompts";
 import path from "path";
 import { access, mkdir, readFile, writeFile } from "fs/promises";
-import { Route, Target } from "../types/Manifest.types";
 
 export default class View {
     private manifest = new Manifest();
@@ -54,7 +53,7 @@ export default class View {
 
     private async getPattern() {
         return input({
-            message: "Enter a pattern for the route to be created in your application's manifest.json file.",
+            message: "Enter a pattern for the route to be created in your application's manifest.json file:",
             default: ""
         });
     }
@@ -68,9 +67,9 @@ export default class View {
 
             await this.createViewFile();
             await this.createControllerFile();
-            await this.updateManifest();
+            await this.manifest.addRoute(this.view, this.pattern);
 
-            consola.success("UI5 Ultima has successfully generated the SAPUI5 View with Controller and manifest.json has been updated with the new route.");
+            consola.success("UI5 Ultima has successfully generated the SAPUI5 View with Controller and manifest.json has been updated with the new route!");
         } catch (error) {
             consola.error(error);
         }
@@ -118,56 +117,6 @@ export default class View {
             consola.info("The BaseController.ts file is missing and being generated...");
             await writeFile(target, content);
         }
-    }
-
-    private async updateManifest() {
-        const manifestPath = path.join(process.cwd(), "webapp", "manifest.json");
-        const content = await this.manifest.getContent();
-        const targetName = `Target${this.view}`;
-        const route: Route = {
-            name: `Route${this.view}`,
-            pattern: this.pattern,
-            target: [targetName]
-        };
-        const target: Target = {
-            id: this.view,
-            name: this.view,
-            type: "View",
-            viewType: "XML",
-            transition: "slide",
-            clearControlAggregation: false
-        };
-        const targets: Record<string, Target> = { [targetName]: target };
-
-        if (content["sap.ui5"]) {
-            if (content["sap.ui5"].routing) {
-                if (content["sap.ui5"].routing.routes) {
-                    content["sap.ui5"].routing.routes.push(route);
-                } else {
-                    content["sap.ui5"].routing.routes = [route];
-                }
-
-                if (content["sap.ui5"].routing.targets) {
-                    content["sap.ui5"].routing.targets[targetName] = target;
-                } else {
-                    content["sap.ui5"].routing.targets = targets;
-                }
-            } else {
-                content["sap.ui5"].routing = {
-                    routes: [route],
-                    targets: targets
-                };
-            }
-        } else {
-            content["sap.ui5"] = {
-                routing: {
-                    routes: [route],
-                    targets: targets
-                }
-            };
-        }
-
-        await writeFile(manifestPath, JSON.stringify(content, null, 4));
     }
 
     private replaceContent(rawContent: string) {

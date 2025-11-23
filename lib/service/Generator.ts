@@ -3,14 +3,18 @@ import { spawn } from "child_process";
 import consola from "consola";
 import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import path from 'path';
+import Manifest from "./Manifest";
 
 export default class Generator {
+    private manifest = new Manifest();
     private uiModule: string;
     private namespace: string;
     private version: string;
     private title: string;
     private description: string;
     private view: string;
+    private model: boolean;
+    private modelUri: string;
     private base: boolean;
     private odata: boolean;
     private fragment: boolean;
@@ -75,7 +79,11 @@ export default class Generator {
                 }
 
                 const rawContent = await readFile(sourcePath, "utf8");
-                const content = this.replaceContent(rawContent, targetName);
+                let content = this.replaceContent(rawContent, targetName);
+
+                if (targetName === "manifest.json" && this.model) {
+                    content = this.manifest.addODataModel(content, this.modelUri);
+                }
 
                 consola.info(`Generating ${targetName} file...`);
                 await writeFile(targetPath, content, "utf-8");
@@ -91,6 +99,12 @@ export default class Generator {
             this.title = await this.getTitle();
             this.description = await this.getDescription();
             this.view = await this.getView();
+            this.model = await this.addODataModel();
+
+            if (this.model) {
+                this.modelUri = await this.getODataModelUri();
+            }
+
             this.base = await this.includeBaseClass();
             this.odata = await this.includeODataClasses();
             this.fragment = await this.includeFragmentClass();
@@ -191,6 +205,20 @@ export default class Generator {
 
                 return true;
             }
+        });
+    }
+
+    private async addODataModel() {
+        return confirm({
+            message: "Would you like to add an OData v2 data source? (default: Y):",
+            default: true
+        });
+    }
+
+    private async getODataModelUri() {
+        return input({
+            message: "Enter the URI of the OData v2 data source:",
+            required: true
         });
     }
 
