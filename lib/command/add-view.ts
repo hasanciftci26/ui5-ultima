@@ -3,8 +3,7 @@ import View from "../service/View";
 
 export default new Command("add-view")
     .description(
-        "Adds a new SAPUI5 view (xml) with controller (ts). Additionally, it adds a new route and target to the manifest.json file. " +
-        "Run this command in the UI module directory containing the webapp directory."
+        "Adds a new SAPUI5 view (xml) with controller (ts). Additionally, it adds a new route and target to the manifest.json file."
     )
     .action(async () => {
         const view = new View();
