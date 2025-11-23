@@ -36,7 +36,7 @@ export default class BaseClass {
             throw new Error("The Base class already exists in the following path: " + targetDirectory);
         }
 
-        const templatePath = path.join(__dirname, "..", "..", "template", "class", "Base.ts.tpl");
+        const templatePath = path.join(__dirname, "..", "..", "template", "class", "core", "Base.ts.tpl");
         const template = await readFile(templatePath, "utf-8");
         const content = this.replaceContent(template);
 
@@ -53,7 +53,7 @@ export default class BaseClass {
         const targetDirectory = path.join(process.cwd(), "webapp", "types", "core");
         const targetPath = path.join(targetDirectory, "Base.types.ts");
         const directoryExists = await Util.pathExists(targetDirectory);
-        const templatePath = path.join(__dirname, "..", "..", "template", "types", "Base.types.ts.tpl");
+        const templatePath = path.join(__dirname, "..", "..", "template", "types", "core", "Base.types.ts.tpl");
         const template = await readFile(templatePath, "utf-8");
         const content = this.replaceContent(template);
 
@@ -70,7 +70,7 @@ export default class BaseClass {
         const targetDirectory = path.join(process.cwd(), "webapp", "types", "global");
         const targetPath = path.join(targetDirectory, "CustomClass.types.ts");
         const directoryExists = await Util.pathExists(targetDirectory);
-        const templatePath = path.join(__dirname, "..", "..", "template", "types", "CustomClass.types.ts.tpl");
+        const templatePath = path.join(__dirname, "..", "..", "template", "types", "global", "CustomClass.types.ts.tpl");
         const template = await readFile(templatePath, "utf-8");
         const content = this.replaceContent(template);
 
