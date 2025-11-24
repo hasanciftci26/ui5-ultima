@@ -7,6 +7,7 @@ import addBaseController from "./command/add-base-controller";
 import addFragment from "./command/add-fragment";
 import addBaseClass from "./command/add-base-class";
 import addFragmentService from "./command/add-fragment-service";
+import addODataService from "./command/add-odata-service";
 
 program
     .name("ui5-ultima")
@@ -22,6 +23,7 @@ program
     .addCommand(addBaseController)
     .addCommand(addFragment)
     .addCommand(addBaseClass)
-    .addCommand(addFragmentService);
+    .addCommand(addFragmentService)
+    .addCommand(addODataService);
 
 program.parse();
