@@ -21,7 +21,7 @@ export default class App extends BaseController {
          * Controller class.
          */
         super.onInit();
-        this.attachPatternMatched("RouteHomepage", this.onRoutePatternMatched.bind(this));
+        this.attachPatternMatched("Route{{VIEW}}", this.onRoutePatternMatched.bind(this));
     }
 
     // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
