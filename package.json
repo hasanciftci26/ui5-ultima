@@ -1,33 +1,33 @@
 {
-  "name": "ui5-ultima",
-  "version": "1.0.4",
-  "description": "UI5 Ultima is a CLI tool to generate free-style SAPUI5 applications and artifacts with TypeScript. The UI5 Ultima comes with some useful built-in SAPUI5 classes.",
-  "keywords": [
-    "sapui5",
-    "generator",
-    "typescript"
-  ],
-  "author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
-  "license": "MIT",
-  "repository": {
-    "url": "https://github.com/hasanciftci26/ui5-ultima"
-  },
-  "homepage": "https://github.com/hasanciftci26/ui5-ultima",
-  "bin": "dist/cli.js",
-  "files": [
-    "dist",
-    "template"
-  ],
-  "scripts": {
-    "prepack": "tsc"
-  },
-  "dependencies": {
-    "@inquirer/prompts": "^8.0.1",
-    "commander": "^14.0.2",
-    "consola": "^3.4.2"
-  },
-  "devDependencies": {
-    "@types/node": "^24.10.1",
-    "typescript": "^5.9.3"
-  }
+	"name": "ui5-ultima",
+	"version": "1.0.4",
+	"description": "UI5 Ultima is a CLI tool to generate free-style SAPUI5 applications and artifacts with TypeScript. The UI5 Ultima comes with some useful built-in SAPUI5 classes.",
+	"keywords": [
+		"sapui5",
+		"generator",
+		"typescript"
+	],
+	"author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
+	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/hasanciftci26/ui5-ultima"
+	},
+	"homepage": "https://github.com/hasanciftci26/ui5-ultima",
+	"bin": "dist/cli.js",
+	"files": [
+		"dist",
+		"template"
+	],
+	"scripts": {
+		"prepack": "tsc"
+	},
+	"dependencies": {
+		"@inquirer/prompts": "^8.0.1",
+		"commander": "^14.0.2",
+		"consola": "^3.4.2"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"typescript": "^5.9.3"
+	}
 }
